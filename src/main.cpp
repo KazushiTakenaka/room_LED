@@ -5,8 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-const char *WIFI_SSID = "";
-const char *WIFI_PASS = "";
+const char *WIFI_SSID = "hoge";
+const char *WIFI_PASS = "huga";
 
 // 時刻設定
 const char *ntpServer = "pool.ntp.org";
@@ -37,6 +37,8 @@ void colorSet(int red, int green, int blue, int white);
 //色変更
 void chengeColor(int red, int green, int blue, int white);
 
+//シリアル出力RGB
+void putColor(int red, int green, int blue, int white);
 void setup() {
   
 }
@@ -98,4 +100,16 @@ void chengeColor(int red, int green, int blue, int white){
     }
     colorSet(r, g, b, w);
     delay(15);
+  }
+}
+
+void putColor(int red, int green, int blue, int white){
+  Serial.print("R=");
+  Serial.print(red);
+  Serial.print(" G=");
+  Serial.print(green);
+  Serial.print(" B=");
+  Serial.print(blue);
+  Serial.print(" W=");
+  Serial.println(white);
 }
