@@ -46,6 +46,12 @@ void loop() {
 }
 
 void colorSet(int red, int green, int blue, int white){
+  ledcWrite(redChannel, red);
+  ledcWrite(greenChannel, green);
+  ledcWrite(blueChannel, blue);
+}
+
+void chengeColor(int red, int green, int blue, int white){
   while(true){
     if(r <= red - 1){
       r++;
@@ -90,6 +96,6 @@ void colorSet(int red, int green, int blue, int white){
     if((r == red) && (g == green) && (b == blue) && (w == white)){
       break;
     }
-    chengeColor(r, g, b, w);
+    colorSet(r, g, b, w);
     delay(15);
 }
