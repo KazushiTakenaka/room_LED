@@ -32,10 +32,10 @@ int w = 0;
 void firstLightChanged(uint8_t brightness);
 
 //チャンネルセット
-void colorset(int red, int green, int blue);
+void colorSet(int red, int green, int blue, int white);
 
 //色変更
-void chengeColor(int red, int green, int blue);
+void chengeColor(int red, int green, int blue, int white);
 
 void setup() {
   
@@ -43,4 +43,53 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+}
+
+void colorSet(int red, int green, int blue, int white){
+  while(true){
+    if(r <= red - 1){
+      r++;
+    }
+    else if(r >= red + 1){
+      r--;
+    }
+    else{
+      r = red;
+    }
+
+    if(g <= green -1 ){
+      g++;
+    }
+    else if(g >= green + 1){
+      g--;
+    }
+    else{
+      g = green;
+    }
+
+    if(b <= blue - 1){
+      b++;
+    }
+    else if(b >= blue + 1){
+      b--;
+    }
+    else{
+      b = blue;
+    }
+
+    if(w <= white -1){
+      w++;
+    }
+    else if(w >= white){
+      w--;
+    }
+    else{
+      w = white;
+    }
+
+    if((r == red) && (g == green) && (b == blue) && (w == white)){
+      break;
+    }
+    chengeColor(r, g, b, w);
+    delay(15);
 }
