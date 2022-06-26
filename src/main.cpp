@@ -40,7 +40,11 @@ void chengeColor(int red, int green, int blue, int white);
 //シリアル出力RGB
 void putColor(int red, int green, int blue, int white);
 void setup() {
-  
+  Serial.begin(115200);
+  ledcSetup(redChannel, 12800, 8);
+  ledcSetup(greenChannel, 12800, 8);
+  ledcSetup(blueChannel, 12800, 8);
+  ledcSetup(whiteChannel, 12800, 8);
 }
 
 void loop() {
