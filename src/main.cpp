@@ -41,10 +41,29 @@ void chengeColor(int red, int green, int blue, int white);
 void putColor(int red, int green, int blue, int white);
 void setup() {
   Serial.begin(115200);
+  // LED_PWM出力チャンネルをGPIOに割り当てる(チャンネル,周波数,PWMの範囲)
   ledcSetup(redChannel, 12800, 8);
   ledcSetup(greenChannel, 12800, 8);
   ledcSetup(blueChannel, 12800, 8);
   ledcSetup(whiteChannel, 12800, 8);
+
+  // ↑同じような感じ？よくわからん(ピン番号,チャンネル)
+  ledcAttachPin(33, redChannel);
+  ledcAttachPin(27, greenChannel);
+  ledcAttachPin(13, blueChannel);
+  ledcAttachPin(14, whiteChannel);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.print("WiFi接続中");
+  // WiFi接続を確認
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    chengeColor(0, 0, 0, 5);
+    Serial.print(".");
+    delay(150);
+    chengeColor(5, 0, 0, 0);
+    delay(150);
+  }
 }
 
 void loop() {
