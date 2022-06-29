@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <ArduinoOTA.h>
 #include <WiFi.h>
 #include <time.h>
 #include <Espalexa.h>
@@ -64,6 +64,39 @@ void setup() {
     chengeColor(5, 0, 0, 0);
     delay(150);
   }
+
+  //arduinoOTAの設定など(コピペ内容わからん)
+  ArduinoOTA.setHostname("desk_esp32");
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
+  ArduinoOTA.begin();
+
+  // アレクサに追加
+  // espalexa.addDevice("電気", firstLightChanged); 
+  // espalexa.begin();
+   //時間情報取得
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
 void loop() {
