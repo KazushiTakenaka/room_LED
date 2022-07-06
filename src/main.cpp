@@ -93,14 +93,24 @@ void setup() {
   ArduinoOTA.begin();
 
   // アレクサに追加
-  // espalexa.addDevice("電気", firstLightChanged); 
-  // espalexa.begin();
+  espalexa.addDevice("電気", firstLightChanged); 
+  espalexa.begin();
    //時間情報取得
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-}
 
+  // //時刻格納作成
+  // struct tm timeInfo; //時刻を格納するオブジェクト
+  // char s[20]; //文字列格納用
+}
+//時刻格納作成
+  struct tm timeInfo; //時刻を格納するオブジェクト
+  char s[20]; //文字列格納用
 void loop() {
-  // put your main code here, to run repeatedly:
+  ArduinoOTA.handle();
+  getLocalTime(&timeInfo);
+  sprintf(s, "%02d%02d", timeInfo.tm_hour, timeInfo.tm_min);
+  espalexa.loop();
+  delay(1);
 }
 
 void colorSet(int red, int green, int blue, int white){
