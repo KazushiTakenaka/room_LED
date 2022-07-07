@@ -66,7 +66,7 @@ void setup() {
   }
 
   //arduinoOTAの設定など(コピペ内容わからん)
-  ArduinoOTA.setHostname("desk_esp32");
+  ArduinoOTA.setHostname("roomESP32");//ここの名前を変更しないといけない+iniファイルも変更する
   ArduinoOTA
     .onStart([]() {
       String type;
@@ -95,6 +95,7 @@ void setup() {
   // アレクサに追加
   espalexa.addDevice("電気", firstLightChanged); 
   espalexa.begin();
+
    //時間情報取得
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
@@ -103,8 +104,9 @@ void setup() {
   // char s[20]; //文字列格納用
 }
 //時刻格納作成
-  struct tm timeInfo; //時刻を格納するオブジェクト
-  char s[20]; //文字列格納用
+struct tm timeInfo; //時刻を格納するオブジェクト
+char s[20]; //文字列格納用
+
 void loop() {
   ArduinoOTA.handle();
   getLocalTime(&timeInfo);
