@@ -5,8 +5,6 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-const char *WIFI_SSID = "eoRT-1b3cdbf-g";
-const char *WIFI_PASS = "330e5c2e64e339";
 
 
 
