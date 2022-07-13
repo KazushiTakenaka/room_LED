@@ -5,8 +5,6 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-const char *WIFI_SSID = "eoRT-1b3cdbf-g";
-const char *WIFI_PASS = "330e5c2e64e339";
 
 
 
@@ -161,7 +159,7 @@ void chengeColor(int red, int green, int blue, int white){
     if(w <= white -1){
       w++;
     }
-    else if(w >= white){
+    else if(w >= white + 1){
       w--;
     }
     else{
