@@ -5,6 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
+const char *WIFI_SSID = "eoRT-1b3cdbf-g";
+const char *WIFI_PASS = "330e5c2e64e339";
 
 
 
@@ -48,10 +50,10 @@ void setup() {
   ledcSetup(whiteChannel, 12800, 8);
 
   // ↑同じような感じ？よくわからん(ピン番号,チャンネル)
-  ledcAttachPin(33, redChannel);
-  ledcAttachPin(27, greenChannel);
-  ledcAttachPin(13, blueChannel);
-  ledcAttachPin(14, whiteChannel);
+  ledcAttachPin(33, whiteChannel);
+  ledcAttachPin(27, blueChannel);
+  ledcAttachPin(13, greenChannel);
+  ledcAttachPin(14, redChannel);
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.print("WiFi接続中");
@@ -122,6 +124,7 @@ void colorSet(int red, int green, int blue, int white){
   ledcWrite(redChannel, red);
   ledcWrite(greenChannel, green);
   ledcWrite(blueChannel, blue);
+  ledcWrite(whiteChannel, white);
 }
 
 void chengeColor(int red, int green, int blue, int white){
