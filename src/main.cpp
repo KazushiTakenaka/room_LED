@@ -17,6 +17,7 @@ const int  daylightOffset_sec = 0;
 
 // RGBWピン
 // R=33 G=27 B=13 W=14
+int mode = 0;
 
 //チャンネル設定
 const int redChannel = 1;
@@ -60,10 +61,10 @@ void setup() {
   // WiFi接続を確認
   while (WiFi.status() != WL_CONNECTED)
   {
-    chengeColor(0, 0, 0, 5);
+    colorSet(0, 0, 0, 5);
     Serial.print(".");
     delay(150);
-    chengeColor(5, 0, 0, 0);
+    colorSet(0, 0, 0, 0);
     delay(150);
   }
 
@@ -116,8 +117,79 @@ void loop() {
   espalexa.loop();
   delay(1);
 
-  chengeColor(255, 255, 255, 255);
-
+  colorSet(r, g, b, w);
+  if(mode == 1){
+    switch (timeInfo.tm_hour){
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+        chengeColor(100, 100, 0, 0);
+        break;
+      case 6:
+        chengeColor(100, 100, 100, 100);
+        break;
+      case 7:
+        chengeColor(120, 120, 120, 120);
+        break;
+      case 8:
+        chengeColor(150, 150, 150, 150);
+      case 9:
+      case 10:
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
+      case 16:
+        chengeColor(100, 100, 100, 200);
+        break;
+      case 17:
+        chengeColor(100, 100, 100, 50);
+        break;
+      case 18:
+        chengeColor(100, 100, 80, 50);
+        break;
+      case 19:
+        chengeColor(100,100,45, 50);
+        break;
+      case 20: 
+      case 21:
+      case 22:
+      case 23:
+        chengeColor(100,100,0, 0);
+        break;
+      default:
+        break;
+    } 
+  }
+  else{
+    switch (timeInfo.tm_hour){
+      case 6:
+        if ((timeInfo.tm_min >= 0) && (timeInfo.tm_min <=10)){
+            
+          while(r <= 130){
+            r++;
+            g++;
+            b++;
+            w++;
+            colorSet(r, g, b, w);
+            delay(10);
+          }
+          while(r >= 1){
+            r--;
+            g--;
+            b--;
+            w--;
+            colorSet(r, g, b, w);
+            delay(10);
+          }
+          
+        } 
+    }
+  }
 }
 
 void colorSet(int red, int green, int blue, int white){
@@ -190,7 +262,59 @@ void putColor(int red, int green, int blue, int white){
 }
 
 void firstLightChanged(uint8_t brightness){
+Serial.println(brightness);
+  if (brightness == 255) {
+    mode = 1;
+  }
+  // else if(brightness == 27){
+  //   mode = 0;
+  //   for(i = 0; i <= 9; i++){
+  //     r++;
+  //     g++;
+  //     b++;
+  //     chengeLedColor(r, g, b);
+  //     delay(50);
+  //   }
+  // }
+  // else if(brightness == 53){
+  //   mode = 0;
+  //   for(i = 0; i <= 9; i++){
+  //     r--;
+  //     g--;
+  //     b--;
+  //     chengeLedColor(r, g, b);
+  //     delay(50);
+  //   }
+  // }
+  // else if(brightness == 78){
+  //   mode = 0;
+  //   chengeColor(200,0,0);
+  // }
+  // else if(brightness == 103){
+  //   mode = 0;
+  //   chengeColor(0, 200, 0);
+  // }
+  // else if(brightness == 129){
+  //   mode = 0;
+  //   chengeColor(0, 0, 200);
+  // }
+  else  {
+    mode = 0;
+    while((r >= 1) || (g >= 1) || (b >= 1) || (w >= 1)){
+      r--;
+      g--;
+      b--;
+   
+      r = max(0, r);
+      g = max(0, g);
+      b = max(0, b);
+      w = max(0, w);
 
-
+      colorSet(r, g, b, w);
+    
+      delay(15);
+      Serial.println(brightness);
+    }
+  }            
 
 }
