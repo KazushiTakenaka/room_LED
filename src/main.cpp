@@ -24,11 +24,22 @@ const int greenChannel = 2;
 const int blueChannel = 3;
 const int whiteChannel = 4;
 
+// 割り込み処理用
+const int whiteUpButton = 2;
+int whiteUpState = 0;
+const int whiteDownButton = 15;
+int whiteDownState = 0;
+
+void whiteUp(void);
+void whiteDown(void);
 //RGBW変数代入
 int r = 0;
 int g = 0;
 int b = 0;
 int w = 0;
+
+// 照明光度調整用
+int i = 0;
 
 //Alexa設定
 void firstLightChanged(uint8_t brightness);
@@ -95,11 +106,17 @@ void setup() {
   ArduinoOTA.begin();
 
   // アレクサに追加
-  espalexa.addDevice("電気", firstLightChanged); 
+  espalexa.addDevice("部屋", firstLightChanged); 
   espalexa.begin();
 
    //時間情報取得
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+
+// pinMode(whiteUpButton, INPUT);
+// pinMode(whiteDownButton, INPUT);
+// attachInterrupt(2, whiteUp, RISING);
+// attachInterrupt(15, whiteDown, RISING);
 
   // //時刻格納作成
   // struct tm timeInfo; //時刻を格納するオブジェクト
@@ -115,6 +132,8 @@ void loop() {
   sprintf(s, "%02d%02d", timeInfo.tm_hour, timeInfo.tm_min);
   espalexa.loop();
   delay(1);
+
+  
 
   colorSet(r, g, b, w);
   if(mode == 1){
@@ -260,35 +279,37 @@ void putColor(int red, int green, int blue, int white){
   Serial.println(white);
 }
 
+// 割り込み処理1
+void whiteUp(void){
+  colorSet(0, 0, 0, 255);
+}
+// 割り込み処理2
+void whiteDown(void){
+  colorSet(0, 0, 0, 0);
+}
+
 void firstLightChanged(uint8_t brightness){
 Serial.println(brightness);
   if (brightness == 255) {
     mode = 1;
   }
-  // else if(brightness == 27){
-  //   mode = 0;
-  //   for(i = 0; i <= 9; i++){
-  //     r++;
-  //     g++;
-  //     b++;
-  //     chengeLedColor(r, g, b);
-  //     delay(50);
-  //   }
-  // }
-  // else if(brightness == 53){
-  //   mode = 0;
-  //   for(i = 0; i <= 9; i++){
-  //     r--;
-  //     g--;
-  //     b--;
-  //     chengeLedColor(r, g, b);
-  //     delay(50);
-  //   }
-  // }
-  // else if(brightness == 78){
-  //   mode = 0;
-  //   chengeColor(200,0,0);
-  // }
+  else if(brightness == 27){
+    mode = 0;
+    chengeColor(0, 0, 0, 255);
+  }
+  
+  else if(brightness == 204){//明るくする
+    mode = 0;
+    for(i = 0; i <= 29; i++){
+      w++;
+      colorSet(r, g, b, w);
+      delay(50);
+    }
+  }
+  else if(brightness == 230){//暗くする
+    mode = 0;
+    chengeColor(0, 0, 0,90);
+  }
   // else if(brightness == 103){
   //   mode = 0;
   //   chengeColor(0, 200, 0);
@@ -303,6 +324,7 @@ Serial.println(brightness);
       r--;
       g--;
       b--;
+      w--;
    
       r = max(0, r);
       g = max(0, g);
