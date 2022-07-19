@@ -5,7 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-
+const char *WIFI_SSID = "eoRT-1b3cdbf-g";
+const char *WIFI_PASS = "330e5c2e64e339";
 
 
 
@@ -24,11 +25,9 @@ const int greenChannel = 2;
 const int blueChannel = 3;
 const int whiteChannel = 4;
 
-// 割り込み処理用
+// 割り込み処理用ピン
 const int whiteUpButton = 2;
-int whiteUpState = 0;
-const int whiteDownButton = 15;
-int whiteDownState = 0;
+// uint8_t int whiteDownButton = 15;
 
 void whiteUp(void);
 void whiteDown(void);
@@ -52,6 +51,7 @@ void chengeColor(int red, int green, int blue, int white);
 
 //シリアル出力RGB
 void putColor(int red, int green, int blue, int white);
+
 void setup() {
   Serial.begin(115200);
   // LED_PWM出力チャンネルをGPIOに割り当てる(チャンネル,周波数,PWMの範囲)
@@ -113,9 +113,9 @@ void setup() {
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
 
-// pinMode(whiteUpButton, INPUT);
+  pinMode(whiteUpButton, INPUT_PULLUP);
+  attachInterrupt(whiteUpButton, whiteUp, RISING);
 // pinMode(whiteDownButton, INPUT);
-// attachInterrupt(2, whiteUp, RISING);
 // attachInterrupt(15, whiteDown, RISING);
 
   // //時刻格納作成
@@ -132,8 +132,6 @@ void loop() {
   sprintf(s, "%02d%02d", timeInfo.tm_hour, timeInfo.tm_min);
   espalexa.loop();
   delay(1);
-
-  
 
   colorSet(r, g, b, w);
   if(mode == 1){
@@ -280,8 +278,11 @@ void putColor(int red, int green, int blue, int white){
 }
 
 // 割り込み処理1
-void whiteUp(void){
-  colorSet(0, 0, 0, 255);
+void IRAM_ATTR whiteUp(void){
+  mode = 0;
+  w = w + 30;
+  w = min(255 ,w);
+  colorSet(r, g, b, w);
 }
 // 割り込み処理2
 void whiteDown(void){
