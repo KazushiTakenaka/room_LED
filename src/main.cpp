@@ -5,7 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-
+const char *WIFI_SSID = "eoRT-1b3cdbf-g";
+const char *WIFI_PASS = "330e5c2e64e339";
 
 
 
@@ -26,7 +27,9 @@ const int whiteChannel = 4;
 
 // 割り込み処理用ピン
 const int whiteUpButton = 2;
-// uint8_t int whiteDownButton = 15;
+const int whiteDownButton = 15;
+// チャタリング対策
+bool switchFlg = false;
 
 void whiteUp(void);
 void whiteDown(void);
@@ -114,8 +117,8 @@ void setup() {
 
   pinMode(whiteUpButton, INPUT_PULLUP);
   attachInterrupt(whiteUpButton, whiteUp, RISING);
-// pinMode(whiteDownButton, INPUT);
-// attachInterrupt(15, whiteDown, RISING);
+  pinMode(whiteDownButton, INPUT_PULLUP);
+  attachInterrupt(whiteDownButton, whiteDown, RISING);
 
   // //時刻格納作成
   // struct tm timeInfo; //時刻を格納するオブジェクト
@@ -131,6 +134,16 @@ void loop() {
   sprintf(s, "%02d%02d", timeInfo.tm_hour, timeInfo.tm_min);
   espalexa.loop();
   delay(1);
+  
+  // チャタリング対策
+  if(switchFlg == true){
+      w = w + 20;
+      w = min(255 ,w);
+      colorSet(r, g, b, w);
+      putColor(r, g, b, w);
+      delay(50);
+      switchFlg = false;
+    }
 
   colorSet(r, g, b, w);
   if(mode == 1){
@@ -278,14 +291,21 @@ void putColor(int red, int green, int blue, int white){
 
 // 割り込み処理1
 void IRAM_ATTR whiteUp(void){
+  switchFlg = true;
   mode = 0;
-  w = w + 30;
-  w = min(255 ,w);
-  colorSet(r, g, b, w);
+  // w = w + 20;
+  // w = min(255 ,w);
+  // colorSet(r, g, b, w);
+  // putColor(r, g, b, w);
 }
 // 割り込み処理2
 void whiteDown(void){
+  switchFlg = true;
+  mode = 0;
+  w = w -20;
+  w = max(0 , w);
   colorSet(0, 0, 0, 0);
+  putColor(r, g, b, w);
 }
 
 void firstLightChanged(uint8_t brightness){
