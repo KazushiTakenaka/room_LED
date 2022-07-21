@@ -5,8 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-const char *WIFI_SSID = "hoge";
-const char *WIFI_PASS = "hoge";
+const char *WIFI_SSID = "テスト";
+const char *WIFI_PASS = "テスト";
 
 
 
