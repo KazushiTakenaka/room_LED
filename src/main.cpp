@@ -5,7 +5,8 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-
+const char *WIFI_SSID = "hoge";
+const char *WIFI_PASS = "hoge";
 
 
 
@@ -16,7 +17,10 @@ const int  daylightOffset_sec = 0;
 
 // RGBWピン
 // R=33 G=27 B=13 W=14
+// モード選択
 int mode = 0;
+int action = 0;
+
 
 //チャンネル設定
 const int redChannel = 1;
@@ -40,6 +44,8 @@ int w = 0;
 
 // 照明光度調整用
 int i = 0;
+
+void buttonCehnge(int action);
 
 //Alexa設定
 void firstLightChanged(uint8_t brightness);
@@ -136,11 +142,8 @@ void loop() {
   
   // チャタリング対策
   if(switchFlg == true){
-      w = w + 20;
-      w = min(255 ,w);
-      colorSet(r, g, b, w);
-      putColor(r, g, b, w);
-      delay(50);
+      buttonCehnge(action);
+      delay(110);
       switchFlg = false;
     }
 
@@ -290,21 +293,40 @@ void putColor(int red, int green, int blue, int white){
 
 // 割り込み処理1
 void IRAM_ATTR whiteUp(void){
+  action = 1;
   switchFlg = true;
   mode = 0;
-  // w = w + 20;
-  // w = min(255 ,w);
-  // colorSet(r, g, b, w);
-  // putColor(r, g, b, w);
 }
 // 割り込み処理2
-void whiteDown(void){
+void IRAM_ATTR whiteDown(void){
+  action = 2;
   switchFlg = true;
   mode = 0;
-  w = w -20;
-  w = max(0 , w);
-  colorSet(0, 0, 0, 0);
-  putColor(r, g, b, w);
+  
+}
+
+// mainでボタン押されたら呼び出すようにする。if文で分岐させてかbuttonの値を変更するswitchで戻り値変更する？？
+void buttonCehnge (int action){
+
+  switch (action)
+  {
+  case 1:
+    w = w + 10;
+    w = min(255 ,w);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  
+  case 2:
+    w = w -10;
+    w = max(0 , w);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+  
+  default:
+    break;
+  }
+
 }
 
 void firstLightChanged(uint8_t brightness){
