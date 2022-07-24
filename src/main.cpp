@@ -5,10 +5,9 @@
 Espalexa espalexa;
 
 // WiFi設定pushするとき消す
-const char *WIFI_SSID = "テスト";
-const char *WIFI_PASS = "テスト";
 
 
+int i;
 
 // 時刻設定
 const char *ntpServer = "pool.ntp.org";
@@ -31,20 +30,35 @@ const int whiteChannel = 4;
 // 割り込み処理用ピン
 const int whiteUpButton = 2;
 const int whiteDownButton = 15;
+const int redUpButton = 26;
+const int redDownButton = 25;
+const int greenUpButton = 5;
+const int greenDownButton = 17;
+const int blueUpButton = 16;
+const int blueDownButton = 4;
+const int onButton = 18;
+const int offButton = 19;
 // チャタリング対策
 bool switchFlg = false;
 
 void whiteUp(void);
 void whiteDown(void);
+void redUp(void);
+void redDown(void);
+void greenUp(void);
+void greenDown(void);
+void blueUp(void);
+void blueDown(void);
+void on(void);
+void off(void);
+
 //RGBW変数代入
 int r = 0;
 int g = 0;
 int b = 0;
 int w = 0;
 
-// 照明光度調整用
-int i = 0;
-
+// ボタン判定
 void buttonCehnge(int action);
 
 //Alexa設定
@@ -72,6 +86,7 @@ void setup() {
   ledcAttachPin(27, blueChannel);
   ledcAttachPin(13, greenChannel);
   ledcAttachPin(14, redChannel);
+
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.print("WiFi接続中");
@@ -119,11 +134,27 @@ void setup() {
    //時間情報取得
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
-
+  // 割り込みピン設定
   pinMode(whiteUpButton, INPUT_PULLUP);
   attachInterrupt(whiteUpButton, whiteUp, RISING);
   pinMode(whiteDownButton, INPUT_PULLUP);
   attachInterrupt(whiteDownButton, whiteDown, RISING);
+  pinMode(redUpButton, INPUT_PULLUP);
+  attachInterrupt(redUpButton, redUp, RISING);
+  pinMode(redDownButton, INPUT_PULLUP);
+  attachInterrupt(redDownButton, redDown, RISING);
+  pinMode(greenUpButton, INPUT_PULLUP);
+  attachInterrupt(greenUpButton, greenUp, RISING);
+  pinMode(greenDownButton, INPUT_PULLUP);
+  attachInterrupt(greenDownButton, greenDown, RISING);
+  pinMode(blueUpButton, INPUT_PULLUP);
+  attachInterrupt(blueUpButton, blueUp, RISING);
+  pinMode(blueDownButton, INPUT_PULLUP);
+  attachInterrupt(blueDownButton, blueDown, RISING);
+  pinMode(onButton, INPUT_PULLUP);
+  attachInterrupt(onButton, on, RISING);
+  pinMode(offButton, INPUT_PULLUP);
+  attachInterrupt(offButton, off, RISING);
 
   // //時刻格納作成
   // struct tm timeInfo; //時刻を格納するオブジェクト
@@ -302,8 +333,49 @@ void IRAM_ATTR whiteDown(void){
   action = 2;
   switchFlg = true;
   mode = 0;
-  
 }
+//割り込み３
+void IRAM_ATTR redUp(void){
+  action = 3;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR redDown(void){
+  action = 4;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR greenUp(void){
+  action = 5;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR greenDown(void){
+  action = 6;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR blueUp(void){
+  action = 7;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR blueDown(void){
+  action = 8;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR on(void){
+  action = 9;
+  switchFlg = true;
+  mode = 0;
+}
+void IRAM_ATTR off(void){
+  action = 10;
+  switchFlg = true;
+  mode = 0;
+}
+
 
 // mainでボタン押されたら呼び出すようにする。if文で分岐させてかbuttonの値を変更するswitchで戻り値変更する？？
 void buttonCehnge (int action){
@@ -312,17 +384,62 @@ void buttonCehnge (int action){
   {
   case 1:
     w = w + 10;
-    w = min(255 ,w);
+    w = min(255 , w);
     colorSet(r, g, b, w);
     putColor(r, g, b, w);
     break;
-  
   case 2:
-    w = w -10;
+    w = w - 10;
     w = max(0 , w);
     colorSet(r, g, b, w);
     putColor(r, g, b, w);
-  
+    break;
+  case 3:
+    r = r + 10;
+    r = min(255 , r);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 4:
+    r = r - 10;
+    r = max(0 , r);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 5:
+    g = g + 10;
+    g = min(255 , g);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 6:
+    g = g - 10;
+    g = max(0 , g);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 7:
+    b = b + 10;
+    b = min(255 , b);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 8:
+    b = b - 10;
+    b = max(0 , b);
+    colorSet(r, g, b, w);
+    putColor(r, g, b, w);
+    break;
+  case 9:
+    mode = 1;
+    break;
+  case 10:
+    w = 0;
+    r = 0;
+    g = 0;
+    b = 0;
+    colorSet(r, g, b, w);
+    break;
   default:
     break;
   }
