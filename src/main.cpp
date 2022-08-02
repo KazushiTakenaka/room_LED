@@ -7,6 +7,7 @@ Espalexa espalexa;
 // WiFi設定pushするとき消す
 
 
+
 int i;
 
 // 時刻設定
@@ -190,13 +191,11 @@ void loop() {
         chengeColor(100, 100, 0, 0);
         break;
       case 6:
-        chengeColor(100, 100, 100, 100);
+        chengeColor(150, 150, 150, 150);
         break;
       case 7:
-        chengeColor(120, 120, 120, 120);
-        break;
       case 8:
-        chengeColor(150, 150, 150, 150);
+        chengeColor(150, 150, 150, 255);
       case 9:
       case 10:
       case 11:
@@ -205,22 +204,22 @@ void loop() {
       case 14:
       case 15:
       case 16:
-        chengeColor(100, 100, 100, 200);
+        chengeColor(120, 120, 120, 200);
         break;
       case 17:
-        chengeColor(100, 100, 100, 50);
+        chengeColor(100, 100, 100, 100);
         break;
       case 18:
-        chengeColor(100, 100, 80, 50);
+        chengeColor(100, 100, 80, 100);
         break;
       case 19:
-        chengeColor(100,100,45, 50);
+        chengeColor(120,120,45, 100);
         break;
       case 20: 
       case 21:
       case 22:
       case 23:
-        chengeColor(100,100,0, 0);
+        chengeColor(100,100,0, 20);
         break;
       default:
         break;
@@ -231,7 +230,7 @@ void loop() {
       case 6:
         if ((timeInfo.tm_min >= 0) && (timeInfo.tm_min <=10)){
             
-          while(r <= 130){
+          while(r <= 250){
             r++;
             g++;
             b++;
@@ -495,5 +494,4 @@ Serial.println(brightness);
       Serial.println(brightness);
     }
   }            
-
 }
